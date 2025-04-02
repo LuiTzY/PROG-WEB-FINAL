@@ -7,12 +7,12 @@ require_once __DIR__ . '/../models/Empresa.php';
         function login() {
             session_start();
             $correo = $_POST['correo'];
-            $clave = $_POST['clave'];
+            $clave = $_POST['passwd'];
 
             $usuario = new Usuario();
             $data = $usuario->findByCorreo($correo);
 
-            if ($data && password_verify($clave, $data['contraseña'])) {
+            if ($data && password_verify($clave, $data['passwd'])) {
                 $_SESSION['id_usuario'] = $data['id'];
 
                 // 🔎 Verificar si es candidato o empresa

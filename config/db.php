@@ -9,8 +9,8 @@
                 $_ENV['MYSQL_HOST'],
                 $_ENV['MYSQL_USER'],
                 $_ENV['MYSQL_PASSWORD'],
-                database: "webJobs",
-                port: $_ENV['MYSQL_PORT']
+                $_ENV['MYSQL_DATABASE'],
+                $_ENV['MYSQL_PORT']
             );
         }
 
