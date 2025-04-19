@@ -1,9 +1,18 @@
+<?php
+require_once '../../models/candidato.php';
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $candidato = new Candidato();
+
+   $candidato->crearCandidato(1,$_POST[]);
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registrarse</title>
+    <title>Registrar Candidato</title>
 </head>
 <body>
     <h1>Registrarse</h1>
