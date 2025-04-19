@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../config/database.php';
+    require_once __DIR__ . '/../config/db.php';
 
 class Empresa {
     private $conn;
@@ -82,7 +82,12 @@ class Empresa {
 
 // ✅ Obtener candidatos que aplicaron a una oferta específica
 public function obtenerAplicacionesPorOferta($id_oferta) {
-    $query = "SELECT c.id, c.nombre, c.apellido, c.correo, a.fecha_aplicacion 
+    
+    if ($id_oferta == 0) {
+        return []; // Retornar un array vacío si el ID no es numérico
+    }
+
+    $query = "SELECT c.id, c.nombre, c.apellido, a.fecha_aplicacion 
               FROM aplicaciones a
               JOIN candidatos c ON a.id_candidato = c.id
               WHERE a.id_oferta = ?";
@@ -95,6 +100,29 @@ public function obtenerAplicacionesPorOferta($id_oferta) {
     return $resultado->fetch_all(MYSQLI_ASSOC);
 }
 
+
+public function obtenerAplicacionesPorEmpresa($id_empresa) {
+    $query = "
+        SELECT 
+            aplicaciones.fecha_aplicacion,
+            candidatos.nombre,
+            candidatos.apellido,
+            ofertas.titulo,
+            ofertas.id AS id_oferta,
+            candidatos.id AS id_candidato
+        FROM aplicaciones
+        JOIN ofertas ON aplicaciones.id_oferta = ofertas.id
+        JOIN candidatos ON aplicaciones.id_candidato = candidatos.id
+        WHERE ofertas.id_empresa = ?
+        ORDER BY aplicaciones.fecha_aplicacion DESC
+    ";
+
+    $stmt = $this->conn->prepare($query);
+    $stmt->bind_param("i", $id_empresa);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    return $result->fetch_all(MYSQLI_ASSOC);
+}
 // ✅ Crear una nueva oferta de empleo
 public function crearOferta($id_empresa, $datos) {
     $query = "INSERT INTO ofertas (id_empresa, titulo, descripcion, requisitos, fecha_creacion) 
@@ -141,6 +169,18 @@ public function crearOferta($id_empresa, $datos) {
         return $stmt->execute();
     }
 
+
+ 
+    
+    public function obtenerOferta($id_oferta) {
+        $query = "SELECT * FROM ofertas WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $id_oferta);
+        $stmt->execute();
+
+        $resultado = $stmt->get_result();
+        return ($resultado->num_rows > 0) ? $resultado->fetch_assoc() : null;
+    }
 
 }
 ?>
