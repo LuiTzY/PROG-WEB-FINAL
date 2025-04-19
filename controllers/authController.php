@@ -15,21 +15,34 @@ require_once __DIR__ . '/../models/Empresa.php';
             if ($data && password_verify($clave, $data['passwd'])) {
                 $_SESSION['id_usuario'] = $data['id'];
 
-                // 🔎 Verificar si es candidato o empresa
+                //  Verificar si es candidato o empresa
                 if (esCandidato($data['id'])) {
                     $_SESSION['tipo_usuario'] = 'candidato';
-                    header("Location: ../views/candidato/dashboard.php");
-                } elseif (esEmpresa($data['id'])) {
+                    header("Location: ./candidatos/dashboard.php");
+                    //Nota: para poder acceder a la info de las sesiones, debemos de acabar esta, para poder incrustar los datos correctamente
+                    exit();
+
+                } 
+                
+                elseif (esEmpresa($data['id'])) {
                     $_SESSION['tipo_usuario'] = 'empresa';
-                    header("Location: ../views/empresa/dashboard.php");
-                } else {
+                    header("Location: ../empresas/dashboard.php");
+                     //Nota: para poder acceder a la info de las sesiones, debemos de acabar esta, para poder incrustar los datos correctamente
+                     exit();
+                }
+                
+                else {
                     // No está ni en candidatos ni en empresas
+                    echo "<script>alert('No tas relacionada con nada.');</script>";
+
+                    header("Location: ./log_user_as.php");
+                    echo "<script>alert('No tiene un rol asignado.');</script>";
                     echo "Error: No tiene un rol asignado.";
 
 
                     //aqui se debe de redirigir con un mensaje de que no tiene nada
                 }
-                exit();
+                // exit();
             } else {
 
                 //alerta para mostrar cuando es invalido
@@ -37,7 +50,6 @@ require_once __DIR__ . '/../models/Empresa.php';
             }
         }
 
-        // ✅ FUNCIONES PARA VERIFICAR ROLES
         function esCandidato($id_usuario) {
             $candidato = new Candidato();
             $data = $candidato->findByUsuarioId($id_usuario);
@@ -50,11 +62,10 @@ require_once __DIR__ . '/../models/Empresa.php';
             return !empty($data); // Si hay resultado, es empresa
         }
 
-        // ✅ LOGOUT: Cerrar sesión
         function logout() {
             session_start();
             session_destroy();
-            header("Location: ../views/auth/login.php");
+            header("Location: ../usuarios/login.php");
             exit();
         }
             
