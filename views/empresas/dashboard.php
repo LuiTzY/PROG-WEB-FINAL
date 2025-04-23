@@ -3,7 +3,6 @@
 
   session_start();
 
-  echo $_SESSION['tipo_usuario'];
   $empresa = new Empresa();
 
   $data = $empresa->obtenerEmpresa($_SESSION['id_usuario']);

@@ -48,7 +48,7 @@ $aplicaciones = $candidatoModel->obtenerMisAplicaciones($id_candidato);
         <h5 class="mb-1"><?= htmlspecialchars($app['titulo']) ?></h5>
         <p class="text-muted mb-1">📍 Empresa: <strong><?= htmlspecialchars($app['nombre_empresa']) ?></strong></p>
         <p>📅 Aplicaste el: <?= date("d/m/Y", strtotime($app['fecha_aplicacion'])) ?></p>
-        <a href="detalle_oferta.php?id=<?= $app['id_oferta'] ?>" class="btn btn-outline-primary btn-sm">Ver Oferta</a>
+        <a href="ofertas.php" class="btn btn-outline-primary btn-sm">Ver Oferta</a>
       </div>
     <?php endforeach; ?>
   <?php else: ?>

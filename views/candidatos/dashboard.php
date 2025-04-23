@@ -77,7 +77,7 @@ $last_access_days = isset($_SESSION['last_access_days']) ? $_SESSION['last_acces
 <div class="list-group mb-5">
   <?php if (!empty($ofertas)): ?>
     <?php foreach ($ofertas as $oferta): ?>
-      <a href="detalle_oferta.php?id=<?= $oferta['id'] ?>" class="list-group-item list-group-item-action">
+      <a href="ofertas.php" class="list-group-item list-group-item-action">
         <div class="d-flex w-100 justify-content-between">
           <h5 class="mb-1"><?= htmlspecialchars($oferta['titulo']) ?></h5>
           <small><?= date("d/m/Y", strtotime($oferta['fecha_creacion'])) ?></small>
