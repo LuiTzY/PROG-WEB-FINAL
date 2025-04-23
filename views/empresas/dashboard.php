@@ -25,8 +25,7 @@
 
     $aplicaciones = $empresa->obtenerAplicacionesPorEmpresa($id_empresa);
     $total_aplicaciones = is_array($aplicaciones) ? count($aplicaciones) : 0;
-
-  } 
+    } 
  
   
 
@@ -104,7 +103,7 @@
           <i class="bi bi-person-check fs-2 text-success mb-2"></i>
           <h5 class="card-title">Aplicaciones Recibidas</h5>
           <p class="card-text fs-4 fw-bold"><?= $total_aplicaciones ?></p>
-          <a href="./aplcaciones/aplicaciones.php" class="btn btn-success">Ver</a>
+          <a href="./ofertas/aplicantes.php" class="btn btn-success">Ver</a>
         </div>
       </div>
     </div>

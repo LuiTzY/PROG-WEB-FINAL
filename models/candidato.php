@@ -20,6 +20,16 @@ class Candidato {
         return ($resultado->num_rows > 0) ? $resultado->fetch_assoc() : null;
     }
 
+    public function buscarCandidatoPorId($id_candidato) {
+        $query = "SELECT * FROM candidatos WHERE id = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $id_candidato);
+        $stmt->execute();
+    
+        $resultado = $stmt->get_result();
+        return ($resultado->num_rows > 0) ? $resultado->fetch_assoc() : null;
+    }
+
     // ✅ Crear candidato (cuando un usuario se registra como candidato)
     
     public function crearCandidato($id_usuario, $datos) {
@@ -111,5 +121,85 @@ class Candidato {
         $conexion->close();
     }
 
+
+
+    public function retirarAplicacion($id_candidato, $id_oferta) {
+        $query = "DELETE FROM aplicaciones WHERE id_candidato = ? AND id_oferta = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ii", $id_candidato, $id_oferta);
+    
+        return $stmt->execute();
+    }
+    
+    public function obtenerOfertasDisponibles() {
+        $query = "
+            SELECT ofertas.*, empresas.nombre_empresa
+            FROM ofertas
+            JOIN empresas ON ofertas.id_empresa = empresas.id
+            ORDER BY fecha_creacion DESC
+        ";
+    
+        $stmt = $this->conn->prepare($query);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
+    
+        return $resultado->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function obtenerMisAplicaciones($id_candidato) {
+        $query = "
+            SELECT 
+                ofertas.titulo, 
+                ofertas.id AS id_oferta,
+                empresas.nombre_empresa,
+                aplicaciones.fecha_aplicacion
+            FROM aplicaciones
+            JOIN ofertas ON aplicaciones.id_oferta = ofertas.id
+            JOIN empresas ON ofertas.id_empresa = empresas.id
+            WHERE aplicaciones.id_candidato = ?
+            ORDER BY aplicaciones.fecha_aplicacion DESC
+        ";
+    
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("i", $id_candidato);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
+
+    public function aplicarOferta($id_candidato, $id_oferta) {
+        // Verificar si ya aplicó
+        $query_check = "SELECT id FROM aplicaciones WHERE id_candidato = ? AND id_oferta = ?";
+        $stmt_check = $this->conn->prepare($query_check);
+        $stmt_check->bind_param("ii", $id_candidato, $id_oferta);
+        $stmt_check->execute();
+        $stmt_check->store_result();
+    
+        if ($stmt_check->num_rows > 0) {
+            return "Ya has aplicado a esta oferta.";
+        }
+    
+        // Insertar nueva aplicación
+        $query = "INSERT INTO aplicaciones (id_candidato, id_oferta) VALUES (?, ?)";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ii", $id_candidato, $id_oferta);
+        
+        if ($stmt->execute()) {
+            return true;
+        } else {
+            return "Error al aplicar: " . $stmt->error;
+        }
+    }
+
+
+    public function yaHaAplicado($id_candidato, $id_oferta) {
+        $query = "SELECT id FROM aplicaciones WHERE id_candidato = ? AND id_oferta = ?";
+        $stmt = $this->conn->prepare($query);
+        $stmt->bind_param("ii", $id_candidato, $id_oferta);
+        $stmt->execute();
+        $stmt->store_result();
+    
+        return $stmt->num_rows > 0;
+    }
 }
 ?>

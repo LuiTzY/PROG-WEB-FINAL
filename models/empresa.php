@@ -168,10 +168,7 @@ public function crearOferta($id_empresa, $datos) {
 
         return $stmt->execute();
     }
-
-
  
-    
     public function obtenerOferta($id_oferta) {
         $query = "SELECT * FROM ofertas WHERE id = ?";
         $stmt = $this->conn->prepare($query);
