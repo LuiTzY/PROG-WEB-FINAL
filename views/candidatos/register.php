@@ -26,14 +26,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (move_uploaded_file($file['tmp_name'], $uploadFile)) {
         $_POST['cv_pdf'] = $uploadFile;
-        $candidato_creado = $candidato->crearCandidato($user_id, $_POST);
     } 
-    else{
-        echo "<script>alert('no se guardo na')</script>";
-    }
-        
-    }
     
+    $candidato_creado = $candidato->crearCandidato($user_id, $_POST);
+
     if ($candidato_creado) {
         $infoCandidato = $candidato->findByUsuarioId($user_id); 
 
@@ -59,6 +55,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo "Error al crear el candidato. Por favor, inténtelo de nuevo.";
     }
 
+        
+    }
+    
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
