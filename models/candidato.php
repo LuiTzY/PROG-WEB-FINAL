@@ -21,6 +21,7 @@ class Candidato {
     }
 
     // ✅ Crear candidato (cuando un usuario se registra como candidato)
+    
     public function crearCandidato($id_usuario, $datos) {
         $query = "INSERT INTO candidatos (id_usuario, nombre, apellido, telefono, direccion, ciudad, resumen, disponibilidad, habilidades, idiomas, redes_profesionales, referencias, foto, cv_pdf) 
                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
@@ -45,8 +46,9 @@ class Candidato {
         );
 
         return $stmt->execute();
-    }
 
+    }
+    
     // ✅ Actualizar información del candidato
     public function actualizarCandidato($id_usuario, $datos) {
         $query = "UPDATE candidatos SET 
@@ -96,6 +98,17 @@ class Candidato {
 
         $resultado = $stmt->get_result();
         return ($resultado->num_rows > 0) ? $resultado->fetch_assoc() : null;
+    }
+
+    public function updateUltimoAcceso($id) {
+        $conexion = conectarDB();
+    
+        $stmt = $conexion->prepare("UPDATE candidatos SET ultimo_acceso = NOW() WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        
+        $stmt->close();
+        $conexion->close();
     }
 
 }

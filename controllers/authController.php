@@ -14,16 +14,35 @@ require_once __DIR__ . '/../models/Empresa.php';
 
             if ($data && password_verify($clave, $data['passwd'])) {
                 $_SESSION['id_usuario'] = $data['id'];
-
-                //  Verificar si es candidato o empresa
+        
+                // Verificar si es candidato
                 if (esCandidato($data['id'])) {
                     $_SESSION['tipo_usuario'] = 'candidato';
-                    header("Location: ./candidatos/dashboard.php");
-                    //Nota: para poder acceder a la info de las sesiones, debemos de acabar esta, para poder incrustar los datos correctamente
-                    exit();
+        
+                    // ✅ Obtener información del candidato y guardarla en sesión
+                    $candidatoModel = new Candidato();
+                    $infoCandidato = $candidatoModel->findByUsuarioId($data['id']); // devuelve array asociativo
 
-                } 
-                
+                     // ✅ Actualizar campo `ultimo_acceso`
+                     $candidatoModel->updateUltimoAcceso($infoCandidato['id']);
+        
+                    if ($infoCandidato) {
+                        $_SESSION['candidate_name'] = $infoCandidato['nombre'];
+        
+                        // Calcular días desde último acceso
+                        if (!empty($infoCandidato['ultimo_acceso'])) {
+                            $ultimaFecha = new DateTime($infoCandidato['ultimo_acceso']);
+                            $hoy = new DateTime();
+                            $diferencia = $hoy->diff($ultimaFecha);
+                            $_SESSION['last_access_days'] = $diferencia->days;
+                        } else {
+                            $_SESSION['last_access_days'] = 'N/A';
+                        }
+                    }
+        
+                    header("Location: ../candidatos/dashboard.php");
+                    exit();
+                }
                 elseif (esEmpresa($data['id'])) {
                     $_SESSION['tipo_usuario'] = 'empresa';
                     header("Location: ../empresas/dashboard.php");

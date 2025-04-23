@@ -58,7 +58,7 @@
 
       <div class="text-center mt-3">
         <a href="#">¿Olvidaste tu contraseña?</a><br>
-        <a href="#">¿No tienes cuenta? Regístrate</a>
+        <a href="register.php">¿No tienes cuenta? Regístrate</a>
       </div>
     </form>
   </div>
